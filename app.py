@@ -10,12 +10,10 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 import os
 
-# -----------------------------------------------------------------------------
 # 1. SETUP & CONFIG
-# -----------------------------------------------------------------------------
 st.set_page_config(layout="wide", page_title="Air Quality Dashboard", page_icon="🏭")
 
-# Custom CSS for Hackathon vibes
+
 st.markdown("""
 <style>
     .metric-card {background-color: #f0f2f6; border-radius: 10px; padding: 20px;}
@@ -24,14 +22,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# -----------------------------------------------------------------------------
 # 2. DATA LOADING (Cached for Speed)
-# -----------------------------------------------------------------------------
 @st.cache_data
 def load_data():
     base_path = ""
     
-    # We join the path safely
     def get_path(filename):
         return os.path.join(base_path, filename)  
     try:
@@ -40,14 +35,10 @@ def load_data():
        
         s_day = pd.read_csv(base_path + 'station_day.csv', parse_dates=['Date'])
         
-        # 4. Load Station Hour (FROM ZIP)
-        # Pandas reads zip files automatically if extension is .zip
         s_hour = pd.read_csv(base_path + 'station_hour.zip', parse_dates=['Datetime'])
         
-        # 5. Load Metadata (Make sure file is named stations.csv)
         stations = pd.read_csv(base_path + 'stations.csv')
         
-        # Pre-merge metadata for Station Audit
         s_day = pd.merge(s_day, stations[['StationId', 'StationName', 'City', 'Status']], on='StationId', how='left')
         s_hour = pd.merge(s_hour, stations[['StationId', 'StationName', 'City']], on='StationId', how='left')
         
@@ -58,9 +49,7 @@ def load_data():
 
 city_day, station_day, station_hour, stations = load_data()
 
-# -----------------------------------------------------------------------------
 # 3. DASHBOARD LAYOUT
-# -----------------------------------------------------------------------------
 
 if city_day is not None:
     
@@ -83,9 +72,7 @@ if city_day is not None:
         "🛠️ Sensor Audit"
     ])
 
-    # =========================================================================
-    # TAB 1: PUBLIC HEALTH IMPACT (The "Wow" Factor)
-    # =========================================================================
+    # TAB 1: PUBLIC HEALTH IMPACT
     with tab_health:
         st.header("Public Health & Policy Impact")
         
@@ -139,9 +126,7 @@ if city_day is not None:
         fig_prog.update_layout(title="% Change in PM2.5 (Negative is Good)", xaxis_tickangle=-90)
         st.plotly_chart(fig_prog, use_container_width=True)
 
-    # =========================================================================
     # TAB 2: HOTSPOTS & TRENDS (Deliverable 1)
-    # =========================================================================
     with tab_trends:
         col_t1, col_t2 = st.columns([2, 1])
         
@@ -197,9 +182,7 @@ if city_day is not None:
             fig_rk = px.bar(rank, y='City', x=selected_pollutant, orientation='h', color=selected_pollutant, title=f"Top 10 Cities in {rank_year}")
             st.plotly_chart(fig_rk, use_container_width=True)
 
-    # =========================================================================
     # TAB 3: CORRELATIONS & CLUSTERS (Deliverable 2)
-    # =========================================================================
     with tab_cluster:
         st.header("Advanced Analytics")
         
@@ -247,9 +230,9 @@ if city_day is not None:
             st.markdown("**Cluster Profiles (Avg Values):**")
             st.dataframe(df_pivot.groupby('Cluster')[pollutant_cols].mean().style.background_gradient(cmap='Greens'))
 
-    # =========================================================================
+    
     # TAB 4: STATION AUDIT (Deliverable 3)
-    # =========================================================================
+
     with tab_audit:
         st.header("🛠️ Data Quality & Sensor Audit")
         
