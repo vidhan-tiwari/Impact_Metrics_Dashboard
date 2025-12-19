@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.preprocessing import StandardScaler
@@ -91,7 +89,7 @@ if city_day is not None:
             fig_cig = px.bar(stats, x='Cigarettes_Per_Day', y='City', orientation='h',
                              title="Breathing the air is equivalent to smoking...",
                              color='Cigarettes_Per_Day', color_continuous_scale='Reds')
-            fig_cig.add_vline(x=1, line_dash="dash", line_color="green", annotation_text="WHO Safe Limit")
+            fig_cig.add_vline(x=1, line_dash="dash", line_color="green", annotation_text="1 Cigarette Equiv.")
             st.plotly_chart(fig_cig, use_container_width=True)
 
         with col2:
@@ -211,7 +209,7 @@ if city_day is not None:
             
             scaler = StandardScaler()
             X = scaler.fit_transform(df_pivot)
-            kmeans = KMeans(n_clusters=n_k, random_state=42)
+            kmeans = KMeans(n_clusters=n_k, random_state=42, n_init="auto")
             labels = kmeans.fit_predict(X)
             df_pivot['Cluster'] = labels.astype(str)
             
@@ -289,4 +287,5 @@ if city_day is not None:
         rec3.success("**3. Coverage Gaps**\n\nFocus expansion on 2017-2018 missing zones identified in the Heatmap.")
 
 else:
+
     st.warning("Data loading failed. Please check paths.")
