@@ -21,18 +21,17 @@ st.markdown("""
 
 @st.cache_data
 def load_data():
-    base_path = ""
     
  
     def get_path(filename):
-        return os.path.join(base_path, filename)  
+        return os.path(filename)  
     try:
         
-        c_day = pd.read_csv(base_path + 'city_day.csv', parse_dates=['Date'])
+        c_day = pd.read_csv('city_day.csv', parse_dates=['Date'])
        
-        s_day = pd.read_csv(base_path + 'station_day.csv', parse_dates=['Date'])
+        s_day = pd.read_csv('station_day.csv', parse_dates=['Date'])
         
-        s_hour = pd.read_csv(base_path + 'station_hour.zip', parse_dates=['Datetime'])
+        s_hour = pd.read_csv('station_hour.zip', parse_dates=['Datetime'])
         
         
         stations = pd.read_csv(base_path + 'stations.csv')
@@ -289,3 +288,4 @@ if city_day is not None:
 else:
 
     st.warning("Data loading failed. Please check paths.")
+
