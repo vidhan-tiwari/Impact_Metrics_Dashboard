@@ -34,7 +34,7 @@ def load_data():
         s_hour = pd.read_csv('station_hour.zip', parse_dates=['Datetime'])
         
         
-        stations = pd.read_csv(base_path + 'stations.csv')
+        stations = pd.read_csv('stations.csv')
         
 
         s_day = pd.merge(s_day, stations[['StationId', 'StationName', 'City', 'Status']], on='StationId', how='left')
@@ -288,4 +288,5 @@ if city_day is not None:
 else:
 
     st.warning("Data loading failed. Please check paths.")
+
 
